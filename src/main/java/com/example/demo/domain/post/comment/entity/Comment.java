@@ -1,5 +1,6 @@
 package com.example.demo.domain.post.comment.entity;
 
+import com.example.demo.domain.post.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,8 +31,8 @@ public class Comment {
     @Setter(AccessLevel.PRIVATE)
     private LocalDateTime modifiedDate;
 
-
-    private Long postId;
+    @ManyToOne
+    private Post post;
 
     private String content;
 

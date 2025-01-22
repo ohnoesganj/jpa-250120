@@ -4,10 +4,13 @@ import com.example.demo.domain.post.comment.Service.CommentService;
 import com.example.demo.domain.post.comment.entity.Comment;
 import com.example.demo.domain.post.post.entity.Post;
 import com.example.demo.domain.post.post.service.PostService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 
 @Configuration
@@ -16,59 +19,53 @@ public class BaseInitData {
     private final PostService postService;
     private final CommentService commentService;
 
+    @Lazy
+    @Autowired
+    private BaseInitData self;
+
     @Bean
     @Order(1)
     public ApplicationRunner applicationRunner() {
         return args -> {
-           if (postService.count() > 0) {
-               return;
-           }
-           postService.write("title1", "content1");
-           postService.write("title1", "content1");
-           postService.write("title1", "content1");
+           self.work1();
+           self.work2();
         };
     }
 
-//    @Bean
-//    @Order(2)
-//    public ApplicationRunner applicationRunner2() {
-//        return args -> {
-//            postService.modify(2L, "new title", "new content");
-//        };
-//    }
+    @Transactional
+    public void work2() {
+//        Post post = postService.findById(1L).get();
 //
-//    @Bean
-//    @Order(3)
-//    public ApplicationRunner applicationRunner3() {
-//        return new ApplicationRunner() {
-//            @Transactional
-//            @Override
-//            public void run (ApplicationArguments args) throws Exception {
-//                Post p1 = postService.findById(2L).get();
-//                postService.delete(p1);
-//
-//                postService.deleteById(1L);
-//            }
-//        };
-//    }
+//        postService.delete(post);
+    }
 
-    @Bean
-    @Order(4)
-    public ApplicationRunner applicationRunner4() {
-        return args -> {
-           Post post = postService.findById(1L).get();
+    @Transactional
+    public void work1() {
+        if (postService.count() > 0) {
+            return;
+        }
 
-            if (commentService.count() > 0) {
-                return;
-            }
+        Post p1 = postService.write("title1", "body1");
+        Post p2 = postService.write("title1", "body2");
+        Post p3 = postService.write("title1", "body3");
 
-           Comment c1 = commentService.write(post.getId(), "comment1");
-           commentService.write(post.getId(), "comment2");
-           commentService.write(post.getId(), "comment3");
+        Comment c1 = Comment.builder()
+                .content("comment1")
+                .build();
 
-           postService.findById(c1.getPostId());
+        p1.addComment(c1);
 
+        Comment c2 = Comment.builder()
+                .content("comment2")
+                .build();
 
-        };
+        p1.addComment(c2);
+
+        Comment c3 = Comment.builder()
+                .content("comment3")
+                .build();
+
+        p1.addComment(c3);
+
     }
 }

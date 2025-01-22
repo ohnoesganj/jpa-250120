@@ -5,6 +5,8 @@ import com.example.demo.domain.post.comment.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -13,7 +15,7 @@ public class CommentService {
 
     public Comment write(long postId, String content) {
         Comment comment = Comment.builder()
-                        .postId(postId)
+//                        .postId(postId)
                         .content(content)
                         .build();
 
@@ -22,5 +24,13 @@ public class CommentService {
 
     public long count() {
         return commentRepository.count();
+    }
+
+    public Optional<Comment> findById(long id) {
+        return commentRepository.findById(id);
+    }
+
+    public void delete(Comment comment) {
+        commentRepository.delete(comment);
     }
 }
