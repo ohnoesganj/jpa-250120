@@ -1,11 +1,7 @@
 package com.example.demo.domain.post.tag.entity;
 
 import com.example.demo.domain.post.post.entity.Post;
-import com.example.demo.global.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -14,12 +10,14 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Tag extends BaseEntity {
+public class Tag {
 
-    @Column(length = 100)
-    private String name;
+    @EmbeddedId
+    private TagId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Include
+    @MapsId("postId")
     private Post post;
 }
 
