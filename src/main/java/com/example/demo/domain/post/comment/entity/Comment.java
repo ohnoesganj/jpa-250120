@@ -2,7 +2,7 @@ package com.example.demo.domain.post.comment.entity;
 
 import com.example.demo.domain.member.Entity.Member;
 import com.example.demo.domain.post.post.entity.Post;
-import com.example.demo.global.entity.BaseEntity;
+import com.example.demo.global.entity.BaseTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
@@ -17,7 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Comment extends BaseEntity {
+public class Comment extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member author;
