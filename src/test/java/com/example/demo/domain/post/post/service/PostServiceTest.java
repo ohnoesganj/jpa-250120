@@ -1,5 +1,7 @@
 package com.example.demo.domain.post.post.service;
 
+import com.example.demo.domain.member.Entity.Member;
+import com.example.demo.domain.member.Service.MemberService;
 import com.example.demo.domain.post.post.entity.Post;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
@@ -25,13 +27,18 @@ public class PostServiceTest {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private MemberService memberService;
+
     @Test
     @DisplayName("글 2개 작성")
     @Transactional
 //    @Rollback
     public void test1() {
-        postService.write("title1", "body1");
-        postService.write("title2", "body2");
+        Member user1 = memberService.findByUsername("user1").get();
+
+        postService.write(user1, "title1", "body1");
+        postService.write(user1, "title2", "body2");
     }
 
     @Test
@@ -140,4 +147,38 @@ public class PostServiceTest {
         assertEquals(3, postPage.getNumberOfElements()); // 현재 페이지에 노출된 글 수
         assertEquals(pageNumber, postPage.getNumber()); // 현재 페이지 번호
     }
+
+    @Test
+    @DisplayName("회원 정보로 글 조회")
+    void t13() {
+        // SELECT * FROM post p WHERE INNER JOIN member m ON p.member_id = m.id where username = 'user1';
+        List<Post> posts = postService.findByAuthorUsername("user1");
+        assertThat(posts.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("회원 정보로 글 조회2")
+    @Transactional
+    void t14() {
+        List<Post> posts = postService.findByAuthorUsername("user1");
+
+        Post post = posts.get(0);
+
+        System.out.println(post.getId() + ", " + post.getTitle());
+        System.out.println(post.getAuthor().getUsername());
+    }
+
+    @Test
+    @DisplayName("글 목록에서 회원 정보 가져오기")
+    @Transactional
+    void t15() {
+        List<Post> posts = postService.findAll();
+
+        for(Post post : posts) {
+            System.out.println(post.getId() + ", " + post.getTitle() + ", "
+                    + post.getAuthor().getNickname());
+        }
+    }
+
+
 }

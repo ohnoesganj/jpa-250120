@@ -1,13 +1,14 @@
 package com.example.demo.domain.post.comment.entity;
 
+import com.example.demo.domain.member.Entity.Member;
 import com.example.demo.domain.post.post.entity.Post;
-import jakarta.persistence.*;
+import com.example.demo.global.entity.BaseEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -16,22 +17,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Comment {
+public class Comment extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.PRIVATE)
-    private Long id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member author;
 
-    @CreatedDate
-    @Setter(AccessLevel.PRIVATE)
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    @Setter(AccessLevel.PRIVATE)
-    private LocalDateTime modifiedDate;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
     private String content;

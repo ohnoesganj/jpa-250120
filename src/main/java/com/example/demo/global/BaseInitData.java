@@ -1,5 +1,7 @@
 package com.example.demo.global;
 
+import com.example.demo.domain.member.Entity.Member;
+import com.example.demo.domain.member.Service.MemberService;
 import com.example.demo.domain.post.comment.Service.CommentService;
 import com.example.demo.domain.post.comment.entity.Comment;
 import com.example.demo.domain.post.post.entity.Post;
@@ -22,6 +24,8 @@ public class BaseInitData {
     @Lazy
     @Autowired
     private BaseInitData self;
+    @Autowired
+    private MemberService memberService;
 
     @Bean
     @Order(1)
@@ -33,35 +37,49 @@ public class BaseInitData {
     }
 
     @Transactional
-    public void work2() {
-//        Post post = postService.findById(1L).get();
-//
-//        postService.delete(post);
+    public void work1() {
+
+        if(memberService.count() > 0) {
+            return;
+        }
+
+        memberService.join("system", "1234", "시스템");
+        memberService.join("admin", "1234", "관리자");
+        memberService.join("user1", "1234", "유저1");
+        memberService.join("user2", "1234", "유저2");
+        memberService.join("user3", "1234", "유저3");
     }
 
     @Transactional
-    public void work1() {
+    public void work2() {
         if (postService.count() > 0) {
             return;
         }
 
-        Post p1 = postService.write("title1", "body1");
-        Post p2 = postService.write("title1", "body2");
-        Post p3 = postService.write("title1", "body3");
+        Member user1 = memberService.findByUsername("user1").get();
+        Member user2 = memberService.findByUsername("user2").get();
+        Member user3 = memberService.findByUsername("user3").get();
+
+        Post p1 = postService.write(user1,"title1", "body1");
+        Post p2 = postService.write(user2, "title1", "body2");
+        Post p3 = postService.write(user3, "title1", "body3");
 
         Comment c1 = Comment.builder()
+                .author(user1)
                 .content("comment1")
                 .build();
 
         p1.addComment(c1);
 
         Comment c2 = Comment.builder()
+                .author(user1)
                 .content("comment2")
                 .build();
 
         p1.addComment(c2);
 
         Comment c3 = Comment.builder()
+                .author(user2)
                 .content("comment3")
                 .build();
 

@@ -1,5 +1,6 @@
 package com.example.demo.domain.post.post.service;
 
+import com.example.demo.domain.member.Entity.Member;
 import com.example.demo.domain.post.post.entity.Post;
 import com.example.demo.domain.post.post.repository.PostRepository;
 import jakarta.transaction.Transactional;
@@ -17,9 +18,10 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public Post write(String title, String body) {
+    public Post write(Member author, String title, String body) {
 
         Post post = Post.builder()
+                .author(author)
                 .title(title)
                 .body(body)
                 .build();
@@ -83,5 +85,9 @@ public class PostService {
 
     public List<Post> findTop2ByTitleOrderByDesc(String title1) {
         return postRepository.findTop2ByOrderByIdDesc();
+    }
+
+    public List<Post> findByAuthorUsername(String username) {
+        return postRepository.findByAuthorUsername(username);
     }
 }

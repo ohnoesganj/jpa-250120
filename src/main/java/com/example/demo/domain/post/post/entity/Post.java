@@ -1,13 +1,12 @@
 package com.example.demo.domain.post.post.entity;
 
+import com.example.demo.domain.member.Entity.Member;
 import com.example.demo.domain.post.comment.entity.Comment;
+import com.example.demo.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,23 +18,13 @@ import java.util.Optional;
 @NoArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Post {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.PRIVATE)
-    private Long id;
-
-    @CreatedDate
-    @Setter(AccessLevel.PRIVATE)
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    @Setter(AccessLevel.PRIVATE)
-    private LocalDateTime modifiedDate;
+public class Post extends BaseEntity {
 
     private String title;
     private String body;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member author;
 
     @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST,
             CascadeType.REMOVE}, orphanRemoval = true)

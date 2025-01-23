@@ -1,7 +1,9 @@
 package com.example.demo.domain.post.comment.Service;
 
+import com.example.demo.domain.member.Entity.Member;
 import com.example.demo.domain.post.comment.entity.Comment;
 import com.example.demo.domain.post.comment.repository.CommentRepository;
+import com.example.demo.domain.post.post.entity.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +15,10 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
 
-    public Comment write(long postId, String content) {
+    public Comment write(Member author, Post post, String content) {
         Comment comment = Comment.builder()
-//                        .postId(postId)
+                        .author(author)
+                        .post(post)
                         .content(content)
                         .build();
 
